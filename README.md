@@ -1,16 +1,9 @@
-# myapp
+Putu Agus Widiastika_220010085
+ijin komformasi pak bawasanya untuk output tugas saya masih ada kendala pas di run debugging kerena eror pada visual code  sama android studio
+sehingga output tidak muncul hanyal layar putih. untuk kendala ini saya akan segera cari tau dan perbaiki.
 
-A new Flutter project.
+namun untuk kodingan sudah saya cantumkan di pages dengan nama search_page.dart terimakasih
 
-## Getting Started
+![image](https://github.com/user-attachments/assets/d765b852-7c01-4953-8e58-79201ca20531)
+![image](https://github.com/user-attachments/assets/0968485a-fcd0-40f2-8e7b-1c79573e86b9)
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
