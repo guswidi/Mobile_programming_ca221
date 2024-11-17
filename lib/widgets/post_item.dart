@@ -32,14 +32,14 @@ class _PostItemState extends State<PostItem> {
     comments = [
       Comment(
         id: '1',
-        author: 'User123',
+        author: 'User Cantik',
         content: 'Komentar pertama!',
         createdAt: DateTime.now(),
       ),
       Comment(
         id: '2',
-        author: 'User456',
-        content: 'Komentar kedua!',
+        author: 'User Ganteng',
+        content: 'Happy Koding!',
         createdAt: DateTime.now(),
       ),
     ];
@@ -87,7 +87,7 @@ class _PostItemState extends State<PostItem> {
                           final result = await Navigator.of(context).push(
                             MaterialPageRoute(
                               builder: (context) => CommentPage(
-                                currentUser: 'User123',
+                                currentUser: 'Agus Widiastika',
                                 comments: comments,
                               ),
                             ),
