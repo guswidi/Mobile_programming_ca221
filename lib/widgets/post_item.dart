@@ -4,7 +4,8 @@ import 'package:myapp/widgets/post_action.dart';
 import 'package:myapp/widgets/post_title.dart';
 
 import '../models/moment.dart';
-import '../pages/create_comment_page.dart';
+import '../models/comment.dart';
+import '../pages/comment_page.dart';
 
 class PostItem extends StatefulWidget {
   const PostItem({
@@ -20,11 +21,28 @@ class PostItem extends StatefulWidget {
 
 class _PostItemState extends State<PostItem> {
   int commentCount = 0;
+  List<Comment> comments = [];
 
   @override
   void initState() {
     super.initState();
     commentCount = widget.moment.commentCount;
+
+    // Dummy komentar
+    comments = [
+      Comment(
+        id: '1',
+        author: 'User123',
+        content: 'Komentar pertama!',
+        createdAt: DateTime.now(),
+      ),
+      Comment(
+        id: '2',
+        author: 'User456',
+        content: 'Komentar kedua!',
+        createdAt: DateTime.now(),
+      ),
+    ];
   }
 
   @override
@@ -65,18 +83,27 @@ class _PostItemState extends State<PostItem> {
                         icon: 'assets/icons/fi-br-comment.svg',
                         label: commentCount.toString(),
                         onPressed: () async {
-                          // Navigasi ke halaman CreateCommentPage dan menerima data
+                          // Navigasi ke halaman komentar
                           final result = await Navigator.of(context).push(
                             MaterialPageRoute(
-                              builder: (context) => CreateCommentPage(),
+                              builder: (context) => CommentPage(
+                                currentUser: 'User123',
+                                comments: comments,
+                              ),
                             ),
                           );
 
-                          // Jika komentar dikirim, tambahkan jumlah komentar
-                          if (result != null && result['comment'] != null) {
-                            setState(() {
-                              commentCount++;
-                            });
+                          // Periksa apakah ada komentar baru
+                          if (result != null && result['newComment'] != null) {
+                            final newComment = result['newComment'] as Comment;
+
+                            // Tambahkan hanya jika komentar belum ada di daftar
+                            if (!comments.any((comment) => comment.id == newComment.id)) {
+                              setState(() {
+                                comments.add(newComment);
+                                commentCount = comments.length;
+                              });
+                            }
                           }
                         },
                       ),

@@ -18,13 +18,15 @@ class PostAction extends StatelessWidget {
     return Row(
       children: [
         IconButton(
-          onPressed: onPressed,  // Gunakan onPressed di sini
+          onPressed: onPressed, // Gunakan onPressed di sini
           icon: SvgPicture.asset(
             icon,
             colorFilter: const ColorFilter.mode(
               Colors.white70,
               BlendMode.srcIn,
             ),
+            width: 24,
+            height: 24,
           ),
         ),
         Text(
