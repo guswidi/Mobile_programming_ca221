@@ -1,4 +1,5 @@
-![image](https://github.com/user-attachments/assets/302c7242-c97a-42d4-bda5-84da0449f589)
-![image](https://github.com/user-attachments/assets/46bcae5f-930e-4540-a2b5-03e1b385f32f)
-![image](https://github.com/user-attachments/assets/64e8299a-be69-4244-ae47-780995e5d66a)
+![image](https://github.com/user-attachments/assets/c7f2567e-d6ef-4999-b326-3a0337c9f53a)
+![image](https://github.com/user-attachments/assets/b3ab3b80-5565-4c6a-ad9a-97bc843fa4dd)
+![image](https://github.com/user-attachments/assets/cd5b24c0-ebb4-4008-9860-401cc1d4e128)
+
 Putu Agus Widiastika_220010085
