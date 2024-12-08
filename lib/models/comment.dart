@@ -1,18 +1,52 @@
-class Comment {
-  String id;
-  String author;
-  String content;
-  DateTime createdAt;
+import 'dart:convert';
 
-  Comment({
+class Comment {
+  final String id;
+  final String momentId;
+  final String creator;
+  final String content;
+  final DateTime createdAt;
+
+  const Comment({
     required this.id,
-    required this.author,
+    required this.momentId,
+    required this.creator,
     required this.content,
     required this.createdAt,
   });
 
-  // Menambahkan method untuk format tanggal agar mudah ditampilkan
-  String get formattedDate {
-    return '${createdAt.day}-${createdAt.month}-${createdAt.year} ${createdAt.hour}:${createdAt.minute}';
-  }
+  Comment copyWith({
+    String? id,
+    String? momentId,
+    String? creator,
+    String? content,
+    DateTime? createdAt,
+  }) =>
+      Comment(
+        id: id ?? this.id,
+        momentId: momentId ?? this.momentId,
+        creator: creator ?? this.creator,
+        content: content ?? this.content,
+        createdAt: createdAt ?? this.createdAt,
+      );
+
+  factory Comment.fromMap(Map<String, dynamic> map) => Comment(
+        id: map['id'],
+        momentId: map['momentId'],
+        creator: map['creator'],
+        content: map['content'],
+        createdAt: DateTime.parse(map['createdAt']),
+      );
+
+  Map<String, dynamic> toMap() => {
+        'id': id,
+        'momentId': momentId,
+        'creator': creator,
+        'content': content,
+        'createdAt': createdAt.toIso8601String(),
+      };
+
+  factory Comment.fromJson(String json) => Comment.fromMap(jsonDecode(json));
+
+  String toJson() => jsonEncode(toMap());
 }

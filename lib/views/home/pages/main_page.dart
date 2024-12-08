@@ -1,15 +1,13 @@
-import 'package:faker/faker.dart' as faker;
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:myapp/pages/home_page.dart';
-import 'package:myapp/pages/search_page.dart'; 
-import 'package:myapp/resources/colors.dart';
-import 'package:nanoid2/nanoid2.dart';
-
-import '../models/moment.dart';
-import 'moment_create_page.dart';
+import 'package:myapp/views/moment/bloc/moment_bloc.dart';
+import 'package:myapp/views/moment/pages/moment_page.dart';
+import 'package:myapp/views/moment/pages/moment_search_page.dart';
+import 'package:myapp/core/resources/colors.dart';
 
 class MainPage extends StatefulWidget {
+  static const String routeName = '/';
   const MainPage({super.key});
 
   @override
@@ -17,16 +15,16 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
+  // Variabel untuk menyimpan index halaman yang aktif
   int _seletedPageIndex = 0;
-  final _faker = faker.Faker();
-  List<Moment> _moments = [];
 
+  // Fungsi untuk mengubah index halaman yang aktif
   void _onPageChanged(int index) {
     if (index == 2) {
-      Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-        return MomentCreatePage(onSaved: _addMoment);
-      }));
+      // Jika index halaman adalah 2, maka navigasi ke halaman create moment
+      context.read<MomentBloc>().add(MomentNavigateToAddEvent());
     } else {
+      // Jika index halaman bukan 2, maka navigasi ke halaman yang sesuai
       setState(() {
         _seletedPageIndex = index;
       });
@@ -36,33 +34,15 @@ class _MainPageState extends State<MainPage> {
   @override
   void initState() {
     super.initState();
-    _moments = List.generate(
-      2,
-      (index) => Moment(
-        id: nanoid(),
-        momentDate: _faker.date.dateTime(),
-        creator: _faker.person.name(),
-        location: _faker.address.city(),
-        imageUrl: 'https://picsum.photos/800/600?random=$index',
-        caption: _faker.lorem.sentence(),
-        likeCount: faker.random.integer(1000),
-        commentCount: faker.random.integer(100),
-        bookmarkCount: faker.random.integer(10),
-      ),
-    );
-  }
-
-  void _addMoment(Moment newMoment) {
-    setState(() {
-      _moments.add(newMoment);
-    });
+    context.read<MomentBloc>().add(MomentGetEvent());
   }
 
   @override
   Widget build(BuildContext context) {
+    // List halaman yang tersedia
     final List<Widget> pages = [
-      HomePage(moments: _moments),
-      SearchPage(),  // Menambahkan SearchPage di sini
+      const MomentPage(),
+      const MomentSearchPage(),
       const Center(
         child: Text('Create Moment'),
       ),
@@ -140,4 +120,4 @@ class _MainPageState extends State<MainPage> {
       ),
     );
   }
-}  
+}
