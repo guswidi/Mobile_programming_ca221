@@ -1,4 +1,3 @@
-![image](https://github.com/user-attachments/assets/302c7242-c97a-42d4-bda5-84da0449f589)
-![image](https://github.com/user-attachments/assets/46bcae5f-930e-4540-a2b5-03e1b385f32f)
-![image](https://github.com/user-attachments/assets/64e8299a-be69-4244-ae47-780995e5d66a)
-Putu Agus Widiastika_220010085
+![image](https://github.com/user-attachments/assets/65b4c087-ac1b-4e25-8f45-5ba9966d63c2)
+putu agus widiastika_220010085
+ijin karena masih eror saya belum bisa menampilkan hasinya terimakasi
