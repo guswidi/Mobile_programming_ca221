@@ -1,126 +1,152 @@
 import 'package:flutter/material.dart';
-import 'package:myapp/core/resources/dimentions.dart';
-
-import '../../../models/moment.dart';
-import '../../../core/resources/colors.dart';
+import 'package:myapp/models/comment.dart';
+import 'package:myapp/repositories/api/api_comment_repository.dart';
 
 class CommentEntryPage extends StatefulWidget {
-  const CommentEntryPage({super.key, required this.onSaved});
-
-  final Function(Moment newMoment) onSaved;
+  static const routeName = '/comment/entry';
+  const CommentEntryPage({super.key, this.commentId});
+  final String? commentId;
 
   @override
   State<CommentEntryPage> createState() => _CommentEntryPageState();
 }
 
 class _CommentEntryPageState extends State<CommentEntryPage> {
-  // Membuat object form global key
   final _formKey = GlobalKey<FormState>();
-  final _dataMoment = {};
+  final _dataComment = {};
+  bool _isLoading = false;
 
-  // Membuat method untuk menyimpan data moment
-  void _saveComment() {
-    if (_formKey.currentState!.validate()) {
-      // Menyimpan data inputan pengguna ke map _dataMoment
-      _formKey.currentState!.save();
-      // Membuat object moment baru
+  final ApiCommentRepository _apiCommentRepository = ApiCommentRepository(baseUrl: 'https://api.example.com');
 
-      // Menutup halaman create moment
-      Navigator.of(context).pop();
+  @override
+  void initState() {
+    super.initState();
+    if (widget.commentId != null) {
+      _loadCommentForEditing(widget.commentId!);
     }
+  }
+
+  Future<void> _loadCommentForEditing(String commentId) async {
+    try {
+      setState(() {
+        _isLoading = true;
+      });
+
+      final comment = await _apiCommentRepository.getById(commentId);
+      if (comment != null) {
+        setState(() {
+          _dataComment['comment'] = comment.content;
+        });
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      _showDialog('Error', 'Failed to load comment for editing');
+    }
+  }
+
+  void _saveComment() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      _formKey.currentState!.save();
+      final newComment = Comment(
+        id: widget.commentId,
+        momentId: 'momentIdExample',
+        content: _dataComment['comment'],
+      );
+
+      try {
+        if (widget.commentId == null) {
+          final result = await _apiCommentRepository.create(newComment);
+          if (result != null) {
+            setState(() {
+              _isLoading = false;
+            });
+            Navigator.of(context).pop();
+            _showDialog('Success', 'Comment successfully created!');
+          }
+        } else {
+          final result = await _apiCommentRepository.update(newComment);
+          if (result) {
+            setState(() {
+              _isLoading = false;
+            });
+            Navigator.of(context).pop();
+            _showDialog('Success', 'Comment successfully updated!');
+          }
+        }
+      } catch (error) {
+        setState(() {
+          _isLoading = false;
+        });
+        _showDialog('Error', 'Error: $error');
+      }
+    }
+  }
+
+  void _showDialog(String title, String message) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(title),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Comment'),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(largeSize),
-        child: Form(
-          key: _formKey,
-          child: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text('Creator'),
-                TextFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(0.0),
-                    ),
-                    hintText: 'Moment creator',
-                    prefixIcon: const Icon(Icons.person),
-                  ),
-                  keyboardType: TextInputType.name,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter moment creator';
-                    }
-                    return null;
-                  },
-                  onSaved: (newValue) {
-                    if (newValue != null) {
-                      _dataMoment['creator'] = newValue;
-                    }
-                  },
+      appBar: AppBar(title: Text(widget.commentId == null ? 'Add Comment' : 'Edit Comment')),
+      body: Form(
+        key: _formKey,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              TextFormField(
+                initialValue: _dataComment['comment'],
+                decoration: InputDecoration(
+                  labelText: 'Comment',
+                  border: OutlineInputBorder(),
                 ),
-                const Text('Comment'),
-                TextFormField(
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(0.0),
+                maxLines: 5,
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a comment';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _dataComment['comment'] = value!;
+                },
+              ),
+              const SizedBox(height: 16),
+              _isLoading
+                  ? const CircularProgressIndicator()
+                  : ElevatedButton(
+                      onPressed: _saveComment,
+                      child: Text(widget.commentId == null ? 'Add Comment' : 'Save Comment'),
                     ),
-                    hintText: 'Comment description',
-                    prefixIcon: const Icon(Icons.note),
-                  ),
-                  keyboardType: TextInputType.multiline,
-                  maxLines: 5,
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Please enter comment caption';
-                    }
-                    return null;
-                  },
-                  onSaved: (newValue) {
-                    if (newValue != null) {
-                      _dataMoment['caption'] = newValue;
-                    }
-                  },
-                ),
-                const SizedBox(height: largeSize),
-                SizedBox(
-                  height: 50.0,
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: primaryColor,
-                      foregroundColor: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    onPressed: _saveComment,
-                    child: const Text('Save'),
-                  ),
-                ),
-                const SizedBox(height: mediumSize),
-                SizedBox(
-                  height: 50.0,
-                  child: OutlinedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: OutlinedButton.styleFrom(
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero,
-                      ),
-                    ),
-                    child: const Text('Cancel'),
-                  ),
-                ),
-              ],
-            ),
+            ],
           ),
         ),
       ),

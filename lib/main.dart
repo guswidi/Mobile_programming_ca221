@@ -5,7 +5,6 @@ import 'package:myapp/core/utils/repository_provider.dart';
 import 'package:myapp/core/resources/colors.dart';
 import 'package:myapp/core/resources/strings.dart';
 import 'package:myapp/core/utils/route_provider.dart';
-import 'package:myapp/repositories/databases/comment_repository.dart'; // Import repository
 
 void main() {
   runApp(const MyApp());
@@ -14,13 +13,11 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
+  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
-      providers: [
-        ...repositoryProviders,
-        RepositoryProvider<CommentRepository>(create: (context) => CommentRepositoryImpl()), // Menyediakan CommentRepositoryImpl dengan tipe yang tepat
-      ],
+      providers: repositoryProviders,
       child: MultiBlocProvider(
         providers: blocProviders,
         child: MaterialApp(
